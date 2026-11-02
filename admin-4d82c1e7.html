@@ -73,6 +73,8 @@ th { color: var(--muted); font-weight: 500; white-space: nowrap; }
 td.n { text-align: right; white-space: nowrap; }
 .pill { display: inline-block; font-size: 12px; padding: 0 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
 .pill.bad { background: var(--bad-soft); color: var(--bad); }
+.you { font-size: 13px; } .you b { font-weight: 600; } .you.bad b { color: var(--bad); } .you.good b { color: var(--good); } .sel { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--fg); width: 100%; }
+.linkbtn { font: inherit; background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; text-align: left; }
 .qi { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 4px; }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; }
 .chip { font: inherit; font-size: 13px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
@@ -175,7 +177,7 @@ S.ver = BANK.version;
 let ADM = store(LS_ADMIN) || { responses: {}, roster: "" };
 const QUIZ_ONLY = "full" === "quiz";
 if (QUIZ_ONLY) $(".tabs").hidden = true;
-let tab = "quiz", demo = false, gf = "all", showAllQ = false, msg = "";
+let tab = "quiz", pk = "", pAll = false, demo = false, gf = "all", showAllQ = false, msg = "";
 const saveS = () => store(LS_DRAFT, S), saveA = () => store(LS_ADMIN, ADM);
 
 /* ---------- 受験 ---------- */
@@ -339,13 +341,51 @@ function adminView() {
     h("button", { class: "btn ghost", onclick: () => { showAllQ = !showAllQ; render(); } }, showAllQ ? "上位8問だけ表示" : "30問すべて表示")));
   wrap.append(h("div", { class: "card" }, h("h2", { text: "個人ごとの結果（管理者のみ）" }), h("p", { class: "mut", text: "点数・順位は全体には公開しません。個別のフォローに使ってください。" }),
     h("div", { class: "wrap" }, h("table", {}, h("thead", {}, h("tr", {}, ...["名前", "区分", "正解", "不動産", "その他", "伸ばしどころ"].map(t => h("th", { text: t })))),
-      h("tbody", {}, [...A.per].sort((x, y) => y.s.total - x.s.total).map(({ r, s }) => h("tr", {}, h("td", { text: r.name }), h("td", { text: r.group === "V" ? "アドバイザー" : "アポインター" }), h("td", { class: "n", text: `${s.total}/${N}` }),
+      h("tbody", {}, [...A.per].sort((x, y) => y.s.total - x.s.total).map(({ r, s }) => h("tr", {}, h("td", {}, h("button", { class: "linkbtn", title: "この人の詳細を見る", onclick: () => { pk = normName(r.name); render(); const el = document.getElementById("person"); if (el) el.scrollIntoView({ block: "start" }); } }, r.name)), h("td", { text: r.group === "V" ? "アドバイザー" : "アポインター" }), h("td", { class: "n", text: `${s.total}/${N}` }),
         h("td", { class: "n", text: `${s.area["不動産"][0]}/${s.area["不動産"][1]}` }), h("td", { class: "n", text: `${s.area["その他"][0]}/${s.area["その他"][1]}` }), h("td", { text: weakTags(s, 2).map(w => w.t).join("、") }))))))));
+  wrap.append(personCard(all));
   const sum = summaryText(A, list), ta = h("textarea", { readonly: true, style: "min-height:240px" }); ta.value = sum;
   wrap.append(h("div", { class: "card" }, h("h2", { text: "報告用のまとめ" }), h("p", { class: "mut", text: "12/2の四半期会議や、上司へのLINE報告にそのまま使えます。" }), ta,
     h("div", { class: "row" }, (() => { const b = h("button", { class: "btn" }, "要約をコピー"); b.onclick = () => copy(sum, b); return b; })(), h("button", { class: "btn ghost", onclick: () => saveCsv(list) }, "回答一覧をCSVで保存"))));
   wrap.append(rosterCard(all));
   return wrap;
+}
+const add = (el, ...k) => el.append(...k.flat().filter(c => c != null && c !== false));
+function personCard(all) {
+  const card = h("div", { class: "card", id: "person" }, h("h2", { text: "個人ごとの詳細（管理者のみ）" }));
+  const people = [...all].sort((x, y) => x.name.localeCompare(y.name, "ja"));
+  if (!people.length) return card;
+  const cur = people.find(r => normName(r.name) === pk) || null;
+  const sel = h("select", { class: "sel", "aria-label": "個人を選ぶ" }, h("option", { value: "" }, "名前を選んでください"),
+    people.map(r => h("option", { value: normName(r.name), selected: cur && normName(r.name) === normName(cur.name) }, `${r.name}（${r.group === "V" ? "アドバイザー" : "アポインター"}・${scoreOf(r.a).total}/${N}）`)));
+  sel.onchange = () => { pk = sel.value; render(); };
+  add(card, h("p", { class: "mut", text: "名前を選ぶと、その人の分野別の結果と、間違えた問題・本人の回答・正解が出ます。" }), sel);
+  if (!cur) return card;
+  const s = scoreOf(cur.a), Aall = analyze(all), blank = cur.a.filter(v => v < 0).length;
+  add(card, 
+    h("div", { class: "kpis" },
+      h("div", { class: "kpi" }, h("b", { text: `${s.total}／${N}` }), h("span", { text: `正解数（${pct(s.total, N)}%）` })),
+      h("div", { class: "kpi" }, h("b", { text: `${s.area["不動産"][0]}／${s.area["不動産"][1]}` }), h("span", { text: "不動産" })),
+      h("div", { class: "kpi" }, h("b", { text: `${s.area["その他"][0]}／${s.area["その他"][1]}` }), h("span", { text: "その他金融" })),
+      h("div", { class: "kpi" }, h("b", { text: `${Aall.avg.toFixed(1)}` }), h("span", { text: "全員の平均正解数" }))),
+    h("p", { class: "mut", text: `${cur.group === "V" ? "アドバイザー" : "アポインター"}・回答日時 ${new Date(cur.t).toLocaleString("ja-JP")}${blank ? `・未回答 ${blank}問` : ""}` }),
+    h("h3", { text: "分野ごとの正答率（本人／全員）" }),
+    Object.entries(s.tag).map(([tg, [a, b]]) => { const p = a / b, al = Aall.tag[tg], pa = al[0] / al[1];
+      return h("div", { class: "brow " + (p < pa - .1 ? "weak" : p > pa + .1 ? "strong" : "") }, h("span", { text: tg }), h("div", { class: "bar" }, h("i", { style: `width:${Math.round(p * 100)}%` })), h("span", { class: "num", text: `${Math.round(p * 100)}%｜${Math.round(pa * 100)}%` })); }),
+    h("p", { class: "mut", text: "右の数字は「本人｜全員」です。全員より10ポイント以上低い分野は赤、高い分野は緑で出ます。" }));
+  const wrongs = Q.map((q, i) => ({ q, i, v: cur.a[i] })).filter(x => x.v !== x.q.ans), rows = pAll ? Q.map((q, i) => ({ q, i, v: cur.a[i] })) : wrongs;
+  add(card, h("h3", { text: pAll ? `全${N}問の回答` : `間違えた問題（${wrongs.length}問）` }),
+    !rows.length ? h("div", { class: "ok", text: "全問正解です。" }) : null,
+    rows.map(({ q, i, v }) => { const ok = v === q.ans;
+      return h("div", { class: "qi" },
+        h("div", { class: "row" }, h("b", { text: `Q${i + 1}` }), h("span", { class: "pill", text: q.tag }), h("span", { class: "mut", text: q.lv }), h("span", { class: "pill" + (ok ? "" : " bad"), style: "margin-left:auto", text: ok ? "○ 正解" : v < 0 ? "× 未回答" : "× 不正解" }),
+          h("span", { class: "mut", text: `全員の正答率 ${pct(Aall.qs[i].ok, Aall.n)}%` })),
+        h("p", { text: q.text }),
+        ok ? h("p", { class: "you good" }, "本人の回答：", h("b", { text: q.opts[v] })) : h("div", { style: "display:flex;flex-direction:column;gap:2px" },
+          h("p", { class: "you bad" }, "本人の回答：", h("b", { text: v < 0 ? "（未回答）" : q.opts[v] })),
+          h("p", { class: "you good" }, "正解：", h("b", { text: q.opts[q.ans] })))); }),
+    h("button", { class: "btn ghost", onclick: () => { pAll = !pAll; render(); } }, pAll ? "間違えた問題だけ表示" : `全${N}問を表示`));
+  return card;
 }
 function rosterCard(all) {
   const ta = h("textarea", { id: "roster", placeholder: "受験してもらう人の名前を、1行に1人ずつ貼り付けます" }); ta.value = ADM.roster || "";
