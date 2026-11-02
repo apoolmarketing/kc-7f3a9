@@ -173,6 +173,8 @@ let S = store(LS_DRAFT);
 if (!S || (S.ver && S.ver !== BANK.version)) S = { step: "start", name: "", group: "A", order: null, ans: null, i: 0, code: null };
 S.ver = BANK.version;
 let ADM = store(LS_ADMIN) || { responses: {}, roster: "" };
+const QUIZ_ONLY = "quiz" === "quiz";
+if (QUIZ_ONLY) $(".tabs").hidden = true;
 let tab = "quiz", demo = false, gf = "all", showAllQ = false, msg = "";
 const saveS = () => store(LS_DRAFT, S), saveA = () => store(LS_ADMIN, ADM);
 
@@ -356,7 +358,7 @@ function rosterCard(all) {
 
 /* ---------- 描画 ---------- */
 function render() {
-  const v = $("#view"), y = window.scrollY; v.replaceChildren(tab === "quiz" ? viewQuiz() : adminView());
+  const v = $("#view"), y = window.scrollY; v.replaceChildren(tab === "quiz" || QUIZ_ONLY ? viewQuiz() : adminView());
   $("#tab-quiz").setAttribute("aria-selected", tab === "quiz"); $("#tab-admin").setAttribute("aria-selected", tab === "admin");
   if (tab === "quiz") window.scrollTo(0, 0); else window.scrollTo(0, y);
 }

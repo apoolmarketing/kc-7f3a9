@@ -1,0 +1,369 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"></head><body style="margin:0"><title>金融知識レベルチェック</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap">
+<style>
+/* 構成：スマホ向けの1カラム。上にタブ（受験／集計・分析）。受験は1問ずつ、集計は上から要約→分野→問題→個人の順。 */
+:root {
+  --bg: #f4f6f9; --surface: #ffffff; --fg: #1b2230; --muted: #5b6678; --line: #d9dee7;
+  --accent: #1f3864; --accent-soft: #e5ebf5; --on-accent: #ffffff;
+  --good: #1f6b4b; --good-soft: #e1f1e9; --bad: #9c2f3f; --bad-soft: #f7e3e6; --warn: #8a5a00; --warn-soft: #fbf0d9;
+  --font-display: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #11151c; --surface: #19202a; --fg: #e8ebf0; --muted: #9aa5b5; --line: #2a3340;
+  --accent: #9db8ea; --accent-soft: #222c40; --on-accent: #11151c;
+  --good: #7cc8a2; --good-soft: #1b3328; --bad: #f09aa9; --bad-soft: #3a2027; --warn: #e5b85c; --warn-soft: #33290f; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #11151c; --surface: #19202a; --fg: #e8ebf0; --muted: #9aa5b5; --line: #2a3340;
+  --accent: #9db8ea; --accent-soft: #222c40; --on-accent: #11151c;
+  --good: #7cc8a2; --good-soft: #1b3328; --bad: #f09aa9; --bad-soft: #3a2027; --warn: #e5b85c; --warn-soft: #33290f; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.7;
+  padding-block: 16px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.app { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.35; }
+h1 { font-size: 22px; } h2 { font-size: 18px; } h3 { font-size: 15px; }
+p { margin: 0; }
+.sub { color: var(--muted); font-size: 13px; }
+.tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--line); }
+.tab { font: inherit; font-weight: 500; background: none; border: 0; padding: 10px 14px; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+.tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+label.f { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+input[type=text], textarea { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; width: 100%; }
+textarea { min-height: 96px; resize: vertical; font-size: 13px; }
+.btn { font: inherit; font-weight: 500; border-radius: 6px; padding: 10px 18px; border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent); cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn:focus-visible, .tab:focus-visible, .opt:focus-visible, .chip:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.seg { display: flex; gap: 8px; }
+.seg label { position: relative; flex: 1; border: 1px solid var(--line); border-radius: 6px; padding: 10px; text-align: center; cursor: pointer; background: var(--bg); }
+.seg input { position: absolute; opacity: 0; }
+.seg input:checked + span { color: var(--accent); font-weight: 700; }
+.seg label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.bar { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); }
+.notice { background: var(--warn-soft); color: var(--warn); border-radius: 6px; padding: 10px 12px; font-size: 13px; }
+.ok { background: var(--good-soft); color: var(--good); border-radius: 6px; padding: 10px 12px; font-size: 13px; }
+.qtext { font-weight: 500; font-size: 16px; }
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 12px; align-items: flex-start; background: var(--bg); color: var(--fg); border: 1.5px solid var(--line); border-radius: 8px; padding: 12px 14px; cursor: pointer; width: 100%; }
+.opt .ol { flex: none; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--line); text-align: center; line-height: 23px; font-size: 13px; color: var(--muted); }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt[aria-pressed="true"] .ol { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 6px; }
+.dot { font: inherit; font-size: 13px; padding: 6px 0; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); cursor: pointer; }
+.dot.done { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.dot.cur { outline: 2px solid var(--accent); }
+.score { font-family: var(--font-display); font-size: 44px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.kpi { background: var(--bg); border-radius: 8px; padding: 10px 12px; }
+.kpi b { display: block; font-family: var(--font-display); font-size: 24px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.kpi span { font-size: 12px; color: var(--muted); }
+.brow { display: grid; grid-template-columns: 7.5em 1fr 6.5em; gap: 10px; align-items: center; font-size: 14px; }
+.brow .num { text-align: right; font-variant-numeric: tabular-nums; }
+.brow.weak .bar > i { background: var(--bad); }
+.brow.strong .bar > i { background: var(--good); }
+.wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { border-bottom: 1px solid var(--line); padding: 7px 8px; text-align: left; vertical-align: top; }
+th { color: var(--muted); font-weight: 500; white-space: nowrap; }
+td.n { text-align: right; white-space: nowrap; }
+.pill { display: inline-block; font-size: 12px; padding: 0 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.qi { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font: inherit; font-size: 13px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.code { font-family: ui-monospace, Menlo, monospace; font-size: 12px; word-break: break-all; background: var(--bg); border: 1px dashed var(--line); border-radius: 6px; padding: 10px; user-select: all; }
+details > summary { cursor: pointer; color: var(--accent); }
+.mut { color: var(--muted); font-size: 13px; }
+[hidden] { display: none !important; }
+@media (max-width: 480px) { .brow { grid-template-columns: 6em 1fr 5.5em; } .score { font-size: 38px; } }
+@media (prefers-reduced-motion: no-preference) { .bar > i { transition: width .4s; } }
+</style>
+
+<div class="app">
+  <header>
+    <h1>金融知識レベルチェック</h1>
+    <p class="sub">A-POOL　不動産20問＋その他金融10問（全30問・3択）</p>
+  </header>
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-quiz" aria-selected="true">受験する</button>
+    <button class="tab" role="tab" id="tab-admin" aria-selected="false">集計・分析（管理者）</button>
+  </nav>
+  <main id="view"></main>
+</div>
+
+<script>
+const BANK = {"version": "v2.5+例1", "questions": [{"id": "R1", "area": "不動産", "lv": "初級", "tag": "利回り・収支", "text": "「表面利回り」とは、何を表す数字？", "opts": ["1年間に手元に残るお金が、自己資金の何％にあたるか", "1年間の家賃収入が、物件の価格の何％にあたるか", "売却したときの利益が、物件の価格の何％にあたるか"], "ans": 1}, {"id": "R2", "area": "不動産", "lv": "初級", "tag": "リスク・売却", "text": "家賃保証（サブリース）などの契約がない場合、入居者が退去して、新しい入居者が決まるまで家賃が入らない間、オーナーのローン返済や管理費・修繕積立金の支払いはどうなる？", "opts": ["家賃が入らなくても、支払いは続く", "管理会社が代わりに支払ってくれる", "家賃が入らない間は、支払いが止まる"], "ans": 0}, {"id": "R3", "area": "不動産", "lv": "初級", "tag": "契約・管理", "text": "区分マンションの「修繕積立金」の説明として正しいものはどれ？", "opts": ["共用部の清掃や管理のために、毎月払うお金", "入居者から預かり、退去時に返すお金", "将来の大規模な修繕に備えて、毎月積み立てるお金"], "ans": 2}, {"id": "R4", "area": "不動産", "lv": "初級", "tag": "融資・金利", "text": "ローンを組んだ人が亡くなったり、高度障害になったりしたとき、「団体信用生命保険（団信）」に入っていると、ローンの残りはどうなる？", "opts": ["保険金は家族に支払われるが、ローンの残りはそのまま続く", "保険金の支払条件を満たせば、ローンの残りは保険金で返済される", "保険金は支払われず、ローンは相続人が引き継ぐ"], "ans": 1}, {"id": "R5", "area": "不動産", "lv": "初級", "tag": "契約・管理", "text": "「サブリース（家賃保証）」の説明として正しいものはどれ？", "opts": ["不動産会社が借り上げ、契約した家賃が期間中は変わらずに支払われる", "不動産会社が借り上げるので、オーナーは空室や修繕の費用を負担しなくてよい", "不動産会社が借り上げて家賃を支払うが、家賃の見直しや契約解除もありうる"], "ans": 2}, {"id": "R6", "area": "不動産", "lv": "初級", "tag": "税金・費用", "text": "不動産を持っている間、毎年かかる税金はどれ？", "opts": ["固定資産税", "不動産取得税", "印紙税"], "ans": 0}, {"id": "R7", "area": "不動産", "lv": "初級", "tag": "リスク・売却", "text": "「利回りが高い物件」について、正しいものはどれ？", "opts": ["管理がしっかりしている物件が多く、全体のリスクは低めである", "築年数や立地などの理由で、空室や修繕のリスクが高いことがある", "築年数が浅い物件が多く、修繕のリスクは小さめである"], "ans": 1}, {"id": "R8", "area": "不動産", "lv": "初級", "tag": "融資・金利", "text": "「変動金利」と「固定金利」の違いとして、正しいものはどれ？", "opts": ["変動金利は市場の金利に合わせて変わり、固定金利は決めた期間は変わらない", "変動金利は借入期間中ずっと同じ金利で、固定金利は市場に合わせて変わる", "変動金利は住宅用のローン、固定金利は投資用のローンの金利のこと"], "ans": 0}, {"id": "R9", "area": "不動産", "lv": "初級", "tag": "契約・管理", "text": "オーナーが管理会社に任せることが多い仕事はどれ？", "opts": ["物件を買うかどうかの判断や、金融機関との融資交渉", "毎年の所得税の計算と、確定申告の手続き", "入居者の募集、家賃の集金、入居者からのクレーム対応"], "ans": 2}, {"id": "R10", "area": "不動産", "lv": "初級", "tag": "税金・費用", "text": "不動産を買うときの費用について、正しいものはどれ？", "opts": ["物件の価格のほかに必要なのは頭金だけで、手数料や税金は売主が負担する", "物件の価格のほかに、仲介手数料や登記費用、税金などの諸費用がかかる", "物件の価格に諸費用も含まれているので、価格分だけ用意すればよい"], "ans": 1}, {"id": "R11", "area": "不動産", "lv": "中級", "tag": "利回り・収支", "text": "広告に「満室想定利回り」と書かれた物件に、今は空室があります。満室想定利回りと実際の収入の差を確認するために、まず必要なものはどれ？", "opts": ["近隣の物件の募集家賃と、同じ広さの部屋の家賃相場", "建物の修繕履歴と、管理会社の対応状況", "現在の入居状況と、実際に入っている家賃の一覧"], "ans": 2}, {"id": "R12", "area": "不動産", "lv": "中級", "tag": "契約・管理", "text": "賃貸借契約で、オーナーが設置した設備として扱われるエアコンが、入居者の故意・過失なく自然に壊れました。修理費は原則として誰が負担する？", "opts": ["オーナー（貸主）", "入居者（借主）", "管理会社"], "ans": 0}, {"id": "R13", "area": "不動産", "lv": "中級", "tag": "税金・費用", "text": "「減価償却費」の説明として正しいものはどれ？", "opts": ["修繕のために支払った費用をその年の経費にする仕組みで、計上のときに新たな現金の支出が発生する", "建物の購入代金を年数に分けて経費にする仕組みで、計上自体では新たな現金の支出はない", "ローンの元金の返済を年数に分けて経費にする仕組みで、計上自体では新たな現金の支出はない"], "ans": 1}, {"id": "R14", "area": "不動産", "lv": "中級", "tag": "利回り・収支", "text": "「実質利回り」と「表面利回り」の違いとして、正しいものはどれ？", "opts": ["実質利回りは、経費や購入時の費用まで入れて計算する", "実質利回りは、売却した価格で計算する", "実質利回りは、満室になった場合の家賃で計算する"], "ans": 0}, {"id": "R15", "area": "不動産", "lv": "中級", "tag": "契約・管理", "text": "入居者が退去するとき、通常の使い方で生じた壁紙の日焼けや、家具の跡の修繕費は、一般的に誰が負担する？", "opts": ["入居者（借主）", "管理会社", "オーナー（貸主）"], "ans": 2}, {"id": "R16", "area": "不動産", "lv": "中級", "tag": "税金・費用", "text": "賃貸している物件の家賃収入から引ける「経費」にならないものはどれ？", "opts": ["固定資産税", "ローンの元金の返済", "その物件の火災保険料"], "ans": 1}, {"id": "R17", "area": "不動産", "lv": "上級", "tag": "利回り・収支", "text": "次の3つの物件は、表面利回りが同じです。周辺の賃貸需要の安定性を最優先して考えるなら、長く貸しやすい可能性が最も高いのは、どれ？", "opts": ["駅から近くて築年数も浅いが、周辺に似た条件の空室が多く出ている物件", "今は満室で管理状態も良いが、家賃が周辺の相場よりかなり高く設定されている物件", "駅から少し離れていて築年数も古いが、周辺の賃貸需要は安定している物件"], "ans": 2}, {"id": "R18", "area": "不動産", "lv": "上級", "tag": "税金・費用", "text": "不動産所得が赤字になったとき、税金について正しい説明はどれ？", "opts": ["給与所得などと合算できる場合があるが、対象外となる赤字もある", "赤字額は、給与から天引きされた所得税から、そのまま差し引かれる", "赤字は翌年の不動産所得からだけ差し引け、給与所得とは合算できない"], "ans": 0}, {"id": "R19", "area": "不動産", "lv": "上級", "tag": "リスク・売却", "text": "通常の売却でローンを完済して売る場合、ローンの残りが売れる価格より多いと、どうなる？", "opts": ["不足分は、金融機関に相談せず、売却後に分割で返せばよい", "売却代金だけでは完済できず、不足分を自己資金などで補う必要がある", "不足分は、売却を仲介した不動産会社が立て替えるのが一般的"], "ans": 1}, {"id": "R20", "area": "不動産", "lv": "上級", "tag": "融資・金利", "text": "ローンを使って、少ない自己資金で大きな物件を買うことを「レバレッジ」と呼びます。正しい説明はどれ？", "opts": ["少ない自己資金で買えるが、収支が悪くなると、自己資金に対する損失も大きくなりやすい", "ローンを使うほど利益は大きくなるが、損失の大きさは自己資金だけで買った場合と変わらない", "ローンを使うと金利負担が増えるため、物件そのものの表面利回りが下がる"], "ans": 0}, {"id": "O1", "area": "その他", "lv": "初級", "tag": "投資商品", "text": "毎月一定額を投資信託で買い付ける「ドルコスト平均法」の説明として正しいものはどれか。", "opts": ["価格が高いときも安いときも同じ金額を買うため、平均取得単価が平準化されやすい", "価格が上がったときだけ買い付けるので、常に有利に買える", "価格が下がったら買付を中止するのが基本ルール"], "ans": 0}, {"id": "O2", "area": "その他", "lv": "中級", "tag": "投資商品", "text": "NISA口座で生じた損失の扱いとして正しいものはどれか。", "opts": ["特定口座や一般口座の利益と損益通算できない", "同じ年の課税口座の利益と損益通算できる", "翌年以降3年間繰り越せる"], "ans": 0}, {"id": "O3", "area": "その他", "lv": "初級", "tag": "投資商品", "text": "iDeCoの掛金の税制上の扱いとして正しいものはどれか。", "opts": ["掛金の全額が所得控除（小規模企業共済等掛金控除）の対象になる", "掛金の50%だけが所得控除の対象になる", "掛金に税金はかからないが、所得控除はない"], "ans": 0}, {"id": "O4", "area": "その他", "lv": "中級", "tag": "保険・年金", "text": "1ヶ月の医療費の自己負担が「高額療養費」の限度額を超えた場合、どうなるか。", "opts": ["限度額を超えた分が後日払い戻される", "翌年の保険料が減額される", "払い戻しはなく、全額自己負担のまま"], "ans": 0}, {"id": "O5", "area": "その他", "lv": "上級", "tag": "経済・金利", "text": "債券・債券の金利・政策金利などの関係性において、以下の説明文のうち正しいものはどれか", "opts": ["債券の金利や政策金利が変動したとしても互いに影響するようなものではない。", "債券の償還期間が長ければ金利は下がり、短ければ金利は上がる。", "政策金利が上昇するとその後に発行される債券の金利も上昇するため、既に金利が確定している既発債への需要は低下する。"], "ans": 2}, {"id": "O6", "area": "その他", "lv": "初級", "tag": "保険・年金", "text": "企業型確定拠出年金（企業型DC）の運用について正しいものはどれか。", "opts": ["運用リスクは加入者本人が負う", "会社が元本を保証する", "運用商品は会社がすべて選び、本人は選べない"], "ans": 0}, {"id": "O7", "area": "その他", "lv": "中級", "tag": "投資商品", "text": "従業員持株会のリスクとして最も適切なものはどれか。", "opts": ["給与所得と資産が同じ会社に集中し、業績悪化時に両方が同時に傷む", "元本が保証されないため、必ず損をする", "上場企業であれば価格変動リスクはない"], "ans": 0}, {"id": "O8", "area": "その他", "lv": "上級", "tag": "経済・金利", "text": "為替と金利に関する説明のうち、最も適切なものはどれか。", "opts": ["日本において政策金利のコントロールは日本国政府の専有権限である。", "政策金利の上昇はその国の預金金利に影響を与え、海外からの自国通過需要にも影響を与えるため、通過価値が上昇傾向となる。", "円高・円安の変動は政策金利の調整に当たり考慮される指標には含まれない。"], "ans": 1}, {"id": "O9", "area": "その他", "lv": "初級", "tag": "経済・金利", "text": "名目金利が2%、物価上昇率が3%のとき、実質金利はおよそいくらか。", "opts": ["約－1%", "約+5%", "約2%"], "ans": 0}, {"id": "O10", "area": "その他", "lv": "初級", "tag": "経済・金利", "text": "購買力平価から見た為替の考え方として正しいものはどれか。", "opts": ["2国間の物価上昇率の差が、長期的には為替レートの変化に反映されやすい", "為替レートは物価と無関係に決まる", "金利が高い国の通貨は必ず下落する"], "ans": 0}]};
+const Q = BANK.questions, N = Q.length;
+const TAGS = [...new Set(Q.map(q => q.tag))];
+const LV = ["初級", "中級", "上級"];
+const LS_DRAFT = "apool_quiz_draft_v1", LS_ADMIN = "apool_admin_v1";
+const $ = s => document.querySelector(s);
+
+/* ---------- helpers ---------- */
+function store(k, v) { try { if (v === undefined) { const r = localStorage.getItem(k); return r ? JSON.parse(r) : null; } localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+function h(tag, props, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v === false || v == null) continue;
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k === "text") el.textContent = v;
+    else el.setAttribute(k, v === true ? (k.startsWith("aria-") ? "true" : "") : v);
+  }
+  for (const c of kids.flat()) if (c != null && c !== false) el.append(c.nodeType ? c : document.createTextNode(c));
+  return el;
+}
+function hashStr(s) { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return x >>> 0; }
+function rng(seed) { let a = seed || 1; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function shuffle3(seed) { const r = rng(seed), a = [0, 1, 2]; for (let i = 2; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const pct = (a, b) => b ? Math.round(a / b * 100) : null;
+const normName = s => (s || "").replace(/[\s　]+/g, "").toLowerCase();
+async function copy(text, btn) {
+  const done = () => { if (btn) { const t = btn.textContent; btn.textContent = "コピーしました"; setTimeout(() => btn.textContent = t, 1600); } };
+  try { await navigator.clipboard.writeText(text); done(); return; } catch (e) {}
+  const ta = h("textarea", { style: "position:fixed;opacity:0" }); ta.value = text; document.body.append(ta); ta.select();
+  try { document.execCommand("copy"); done(); } catch (e) {} ta.remove();
+}
+
+/* ---------- 回答コード ---------- */
+function encodeCode(r) {
+  const j = JSON.stringify({ b: BANK.version, n: r.name, g: r.group, t: r.t, a: r.a.map(x => x < 0 ? "-" : x).join("") });
+  const bytes = new TextEncoder().encode(j); let bin = ""; bytes.forEach(b => bin += String.fromCharCode(b));
+  return "APOOL1." + btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function decodeCode(tok) {
+  const b64 = tok.slice(7).replace(/-/g, "+").replace(/_/g, "/"), bin = atob(b64 + "=".repeat((4 - b64.length % 4) % 4));
+  const j = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))));
+  if (typeof j.a !== "string" || j.a.length !== N || !j.n) throw new Error("形式が違います");
+  return { name: String(j.n), group: j.g === "V" ? "V" : "A", t: j.t || 0, ver: j.b, a: [...j.a].map(c => c === "-" ? -1 : +c) };
+}
+
+/* ---------- 採点・集計 ---------- */
+const isOk = (a, i) => a[i] === Q[i].ans;
+function scoreOf(a) {
+  const o = { total: 0, area: { "不動産": [0, 0], "その他": [0, 0] }, tag: {}, lv: {} };
+  Q.forEach((q, i) => {
+    const ok = isOk(a, i) ? 1 : 0; o.total += ok;
+    o.area[q.area][0] += ok; o.area[q.area][1]++;
+    (o.tag[q.tag] = o.tag[q.tag] || [0, 0])[0] += ok; o.tag[q.tag][1]++;
+    (o.lv[q.lv] = o.lv[q.lv] || [0, 0])[0] += ok; o.lv[q.lv][1]++;
+  });
+  return o;
+}
+function analyze(list) {
+  const n = list.length, per = list.map(r => ({ r, s: scoreOf(r.a) }));
+  const qs = Q.map((q, i) => { const c = [0, 0, 0]; let ok = 0, blank = 0; list.forEach(r => { const v = r.a[i]; if (v < 0) blank++; else c[v]++; if (v === q.ans) ok++; }); return { q, i, ok, n, c, blank }; });
+  const agg = key => { const m = {}; qs.forEach(x => { const k = x.q[key]; (m[k] = m[k] || [0, 0])[0] += x.ok; m[k][1] += n; }); return m; };
+  const avg = n ? per.reduce((s, p) => s + p.s.total, 0) / n : 0;
+  return { n, per, qs, tag: agg("tag"), lv: agg("lv"), area: agg("area"), avg };
+}
+function weakTags(s, k = 2) {
+  return Object.entries(s.tag).map(([t, [a, b]]) => ({ t, p: a / b, a, b })).sort((x, y) => x.p - y.p || y.b - x.b).slice(0, k);
+}
+
+/* ---------- 状態 ---------- */
+let S = store(LS_DRAFT);
+/* 問題の版が変わっていたら、途中保存は破棄（選択肢の位置ずれ防止） */
+if (!S || (S.ver && S.ver !== BANK.version)) S = { step: "start", name: "", group: "A", order: null, ans: null, i: 0, code: null };
+S.ver = BANK.version;
+let ADM = store(LS_ADMIN) || { responses: {}, roster: "" };
+const QUIZ_ONLY = "full" === "quiz";
+if (QUIZ_ONLY) $(".tabs").hidden = true;
+let tab = "quiz", demo = false, gf = "all", showAllQ = false, msg = "";
+const saveS = () => store(LS_DRAFT, S), saveA = () => store(LS_ADMIN, ADM);
+
+/* ---------- 受験 ---------- */
+function viewQuiz() {
+  if (S.step === "start") return startView();
+  if (S.step === "q") return questionView();
+  if (S.step === "review") return reviewView();
+  return doneView();
+}
+function startView() {
+  const nameIn = h("input", { type: "text", id: "name", value: S.name, placeholder: "例：山田 太郎", autocomplete: "name" });
+  const go = h("button", { class: "btn", onclick: () => {
+    const name = nameIn.value.trim(); if (!name) { nameIn.focus(); return; }
+    const group = document.querySelector("input[name=g]:checked").value;
+    S = { step: "q", name, group, order: Q.map((q, i) => shuffle3(hashStr(name + "|" + i))), ans: Array(N).fill(-1), i: 0, code: null }; saveS(); render();
+  } }, S.ans && S.ans.some(x => x >= 0) ? "つづきから始める" : "テストを始める");
+  return h("div", { class: "card" },
+    h("h2", { text: "テストを始める" }),
+    h("ul", { class: "mut", style: "margin:0;padding-left:1.2em" },
+      h("li", { text: "全30問・すべて3択（約15分）" }),
+      h("li", { text: "診断テストです。点数で選別せず、弱い分野を勉強会につなげます。" }),
+      h("li", { text: "資料の参照・AIの利用はしないでください。" }),
+      h("li", { text: "回答中は正解や点数は出ません。途中で閉じても、この端末に回答が残ります。" })),
+    h("label", { class: "f" }, "お名前", nameIn),
+    h("div", { class: "seg", role: "radiogroup", "aria-label": "区分" },
+      h("label", {}, h("input", { type: "radio", name: "g", value: "A", checked: S.group !== "V" }), h("span", { text: "アポインター" })),
+      h("label", {}, h("input", { type: "radio", name: "g", value: "V", checked: S.group === "V" }), h("span", { text: "アドバイザー" }))),
+    go);
+}
+function questionView() {
+  const i = S.i, q = Q[i], ord = S.order[i];
+  const opts = ord.map((orig, j) => h("button", { class: "opt", "aria-pressed": S.ans[i] === orig, onclick: () => { S.ans[i] = orig; saveS(); render(); } },
+    h("span", { class: "ol", text: "ABC"[j] }), h("span", { text: q.opts[orig] })));
+  const answered = S.ans.filter(x => x >= 0).length;
+  return h("div", { class: "card" },
+    h("div", { class: "row", style: "justify-content:space-between" }, h("b", { text: `Q${i + 1} / ${N}` }), h("span", { class: "mut", text: `回答済み ${answered}問` })),
+    h("div", { class: "bar" }, h("i", { style: `width:${(i + 1) / N * 100}%` })),
+    h("p", { class: "qtext", text: q.text }),
+    h("div", { class: "opts", role: "group", "aria-label": "選択肢" }, opts),
+    h("div", { class: "row", style: "justify-content:space-between" },
+      h("button", { class: "btn ghost", disabled: i === 0, onclick: () => { S.i--; saveS(); render(); } }, "前へ"),
+      i < N - 1 ? h("button", { class: "btn", onclick: () => { S.i++; saveS(); render(); } }, "次へ")
+                : h("button", { class: "btn", onclick: () => { S.step = "review"; saveS(); render(); } }, "確認へ")),
+    h("details", {}, h("summary", { text: "問題番号から移動" }), h("div", { class: "grid", style: "margin-top:10px" },
+      Q.map((_, k) => h("button", { class: "dot" + (S.ans[k] >= 0 ? " done" : "") + (k === i ? " cur" : ""), onclick: () => { S.i = k; saveS(); render(); } }, k + 1)))));
+}
+function reviewView() {
+  const un = S.ans.map((x, k) => x < 0 ? k : -1).filter(k => k >= 0);
+  return h("div", { class: "card" },
+    h("h2", { text: "提出の確認" }),
+    un.length ? h("div", { class: "notice" }, `未回答が${un.length}問あります（Q${un.map(k => k + 1).join("、Q")}）。未回答は不正解として数えます。`)
+              : h("div", { class: "ok", text: "30問すべてに回答しました。" }),
+    un.length ? h("div", { class: "grid" }, un.map(k => h("button", { class: "dot", onclick: () => { S.step = "q"; S.i = k; saveS(); render(); } }, k + 1))) : null,
+    h("p", { class: "mut", text: "提出すると回答は変更できません。" }),
+    h("div", { class: "row", style: "justify-content:space-between" },
+      h("button", { class: "btn ghost", onclick: () => { S.step = "q"; S.i = N - 1; saveS(); render(); } }, "戻る"),
+      h("button", { class: "btn", onclick: () => { S.step = "done"; S.t = Date.now(); S.code = encodeCode({ name: S.name, group: S.group, t: S.t, a: S.ans }); saveS(); render(); } }, "提出する")));
+}
+function doneView() {
+  const s = scoreOf(S.ans), weak = weakTags(s, 2);
+  const text = `【金融知識レベルチェック】${S.name}\n${S.code}`;
+  const bars = TAGS.map(t => { const [a, b] = s.tag[t], p = pct(a, b); return h("div", { class: "brow" }, h("span", { text: t }), h("div", { class: "bar" }, h("i", { style: `width:${p}%` })), h("span", { class: "num", text: `${a}/${b}問` })); });
+  return h("div", { class: "app", style: "gap:16px" },
+    h("div", { class: "card" },
+      h("p", { class: "sub", text: `${S.name}さんの結果（本人だけに表示されます）` }),
+      h("div", { class: "score" }, `${s.total}`, h("span", { class: "sub", style: "font-size:16px" }, ` / ${N}問正解`)),
+      h("p", { class: "mut", text: `不動産 ${s.area["不動産"][0]}/${s.area["不動産"][1]}　その他金融 ${s.area["その他"][0]}/${s.area["その他"][1]}` }),
+      h("p", { class: "mut", text: "正解と解説は、テスト後の資料で配布します。" })),
+    h("div", { class: "card" }, h("h3", { text: "分野ごとの結果" }), bars,
+      h("p", { text: `伸ばしどころ：${weak.map(w => w.t).join("、")}` })),
+    h("div", { class: "card" },
+      h("h3", { text: "管理者に送ってください" }),
+      h("p", { class: "mut", text: "下の回答コードを、LINEで管理者に送ってください。名前と回答が入っています。送ったあとは、この画面を閉じて大丈夫です。" }),
+      h("div", { class: "code", text: S.code }),
+      h("div", { class: "row" }, (() => { const b = h("button", { class: "btn" }, "名前つきでコピー"); b.onclick = () => copy(text, b); return b; })()),
+      h("details", {}, h("summary", { text: "やり直す（練習用）" }), h("div", { class: "row", style: "margin-top:8px" },
+        h("p", { class: "mut", text: "回答がこの端末から消えます。提出済みのコードは管理者側に残ります。" }),
+        h("button", { class: "btn ghost", onclick: () => { S = { step: "start", name: "", group: "A", order: null, ans: null, i: 0, code: null }; saveS(); render(); } }, "消してやり直す")))));
+}
+
+/* ---------- 管理者 ---------- */
+function makeDemo() {
+  const names = ["サンプルA", "サンプルB", "サンプルC", "サンプルD", "サンプルE", "サンプルF", "サンプルG", "サンプルH", "サンプルI"];
+  const skill = { "利回り・収支": .85, "融資・金利": .55, "税金・費用": .5, "契約・管理": .8, "リスク・売却": .6, "投資商品": .75, "保険・年金": .65, "経済・金利": .4 };
+  return names.map((name, k) => { const r = rng(1000 + k * 77); const lvAdj = { "初級": .1, "中級": 0, "上級": -.15 };
+    return { name, group: k === 8 ? "V" : "A", t: Date.now() - k * 3600e3, ver: BANK.version, a: Q.map(q => { const p = Math.min(.97, Math.max(.1, skill[q.tag] + lvAdj[q.lv] + (k % 3 - 1) * .08)); if (r() < p) return q.ans; const w = [0, 1, 2].filter(x => x !== q.ans); return w[Math.floor(r() * 2)]; }) }; });
+}
+function importCodes(text) {
+  const toks = text.match(/APOOL1\.[A-Za-z0-9_-]+/g) || []; let ok = 0, bad = 0, upd = 0, old = 0;
+  toks.forEach(t => { try { const r = decodeCode(t); if (r.ver !== BANK.version) { old++; return; } const key = normName(r.name); if (ADM.responses[key]) upd++; if (!ADM.responses[key] || ADM.responses[key].t <= r.t) ADM.responses[key] = r; ok++; } catch (e) { bad++; } });
+  if (!toks.length) return "回答コード（APOOL1. で始まる文字）が見つかりませんでした。";
+  saveA(); return `${ok}件を取り込みました${upd ? `（うち${upd}件は同じ名前の更新）` : ""}${bad ? `、読み取れないコードが${bad}件` : ""}。` + (old ? `⚠ 問題の版が違うため${old}件を取り込みませんでした（採点がずれるため）。該当の方には、最新のリンクで受け直してもらってください。` : "");
+}
+function summaryText(A, list) {
+  const tags = Object.entries(A.tag).map(([t, [a, b]]) => ({ t, p: a / b, a, b })).sort((x, y) => x.p - y.p);
+  const weak = tags.slice(0, 2), strong = tags.slice(-2).reverse();
+  const worstQ = [...A.qs].sort((x, y) => x.ok - y.ok).slice(0, 3);
+  const ap = list.filter(r => r.group === "A").length, ad = list.length - ap;
+  return [`【金融知識レベルチェック　結果報告】`, `受験者：${list.length}名（アポインター${ap}名・アドバイザー${ad}名）`, `平均点：${A.avg.toFixed(1)} / ${N}問（${pct(A.avg, N)}%）`,
+    `不動産：${pct(A.area["不動産"][0], A.area["不動産"][1])}％　その他金融：${pct(A.area["その他"][0], A.area["その他"][1])}％`,
+    `難易度別：${LV.map(l => `${l}${pct(A.lv[l][0], A.lv[l][1])}％`).join("・")}`,
+    ``, `■強い分野`, ...strong.map(x => `・${x.t}（${Math.round(x.p * 100)}％）`),
+    `■弱い分野`, ...weak.map(x => `・${x.t}（${Math.round(x.p * 100)}％）`),
+    `■正答率の低い問題`, ...worstQ.map(x => `・Q${x.i + 1}（${x.q.tag}）${pct(x.ok, x.n)}％`),
+    ``, `■勉強会の提案`, `弱い分野（${weak.map(x => x.t).join("、")}）を優先テーマにして、正答率の低い問題を題材に進めます。`].join("\n");
+}
+function csvOf(list) {
+  const esc = v => `"${String(v).replace(/"/g, '""')}"`;
+  const head = ["名前", "区分", "提出日時", "正解数", "不動産", "その他", ...Q.map((q, i) => `Q${i + 1}(${q.tag})`)];
+  const rows = list.map(r => { const s = scoreOf(r.a); return [r.name, r.group === "V" ? "アドバイザー" : "アポインター", new Date(r.t).toLocaleString("ja-JP"), s.total, s.area["不動産"][0], s.area["その他"][0], ...Q.map((q, i) => r.a[i] < 0 ? "" : isOk(r.a, i) ? "○" : "×")].map(esc).join(","); });
+  return "﻿" + [head.map(esc).join(","), ...rows].join("\n");
+}
+async function saveCsv(list) {
+  let d = null; try { d = window.claude && claude.use ? await claude.use("downloads") : null; } catch (e) {}
+  if (!d) {
+    try { const u = URL.createObjectURL(new Blob([csvOf(list)], { type: "text/csv;charset=utf-8" })), el = document.createElement("a"); el.href = u; el.download = "金融知識レベルチェック_回答一覧.csv"; document.body.appendChild(el); el.click(); el.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000); }
+    catch (e) { msg = "保存できませんでした。「要約をコピー」か、画面の表を使ってください。"; render(); }
+    return;
+  }
+  try { await d.save({ filename: "金融知識レベルチェック_回答一覧.csv", data: csvOf(list) }); } catch (e) { if (e && e.code !== "declined") { msg = "保存できませんでした。"; render(); } }
+}
+function adminView() {
+  const real = Object.values(ADM.responses), all = demo ? makeDemo() : real;
+  const list = all.filter(r => gf === "all" || r.group === gf);
+  const pasteIn = h("textarea", { id: "paste", placeholder: "LINEで届いた回答コードをそのまま貼り付けます（複数まとめてOK）" });
+  const wrap = h("div", { class: "app", style: "gap:16px" });
+  wrap.append(h("div", { class: "card" },
+    h("h2", { text: "回答を集める" }),
+    h("p", { class: "mut", text: "受験した人から届いた回答コードを貼り付けて、取り込みます。このデータは、この端末のブラウザにだけ保存されます。他の人には見えません。" }),
+    pasteIn,
+    h("div", { class: "row" },
+      h("button", { class: "btn", onclick: () => { demo = false; msg = importCodes(pasteIn.value); render(); } }, "取り込む"),
+      h("button", { class: "btn ghost", onclick: () => { demo = !demo; msg = ""; render(); } }, demo ? "サンプル表示をやめる" : "サンプルデータで見る"),
+      real.length && !demo ? h("button", { class: "btn ghost", onclick: () => { ADM.responses = {}; saveA(); msg = "取り込んだ回答を消しました。"; render(); } }, "回答を全部消す") : null),
+    msg ? h("div", { class: "ok", text: msg }) : null,
+    demo ? h("div", { class: "notice", text: "サンプルデータを表示中です。実際の回答ではありません。" }) : null));
+  if (!list.length) { wrap.append(h("div", { class: "card" }, h("p", { class: "mut", text: demo ? "この区分の回答はありません。" : "まだ回答がありません。回答コードを取り込むと、ここに集計が出ます。" }))); wrap.append(rosterCard(all)); return wrap; }
+  const A = analyze(list);
+  const filt = h("div", { class: "chips", role: "group", "aria-label": "区分" }, [["all", "全員"], ["A", "アポインター"], ["V", "アドバイザー"]].map(([k, t]) => h("button", { class: "chip", "aria-pressed": gf === k, onclick: () => { gf = k; render(); } }, t)));
+  wrap.append(h("div", { class: "card" }, filt,
+    h("div", { class: "kpis" },
+      h("div", { class: "kpi" }, h("b", { text: `${A.n}名` }), h("span", { text: "受験者" })),
+      h("div", { class: "kpi" }, h("b", { text: `${A.avg.toFixed(1)}` }), h("span", { text: `平均正解数（/${N}問）` })),
+      h("div", { class: "kpi" }, h("b", { text: `${pct(A.avg, N)}%` }), h("span", { text: "平均正答率" })),
+      h("div", { class: "kpi" }, h("b", { text: `${Math.max(...A.per.map(p => p.s.total))}／${Math.min(...A.per.map(p => p.s.total))}` }), h("span", { text: "最高／最低（正解数）" }))),
+    A.n < 5 ? h("div", { class: "notice", text: "人数が少ないため、割合は1人の違いで大きく動きます。正解数もあわせて見てください。" }) : null));
+  const sortedTags = Object.entries(A.tag).map(([t, [a, b]]) => ({ t, a, b, p: a / b })).sort((x, y) => x.p - y.p);
+  wrap.append(h("div", { class: "card" }, h("h2", { text: "分野ごとの正答率" }), h("p", { class: "mut", text: "低い順です。赤が弱い分野、緑が強い分野です。" }),
+    sortedTags.map((x, k) => h("div", { class: "brow " + (k < 2 && x.p < .8 ? "weak" : k >= sortedTags.length - 2 && x.p >= .6 ? "strong" : "") }, h("span", { text: x.t }), h("div", { class: "bar" }, h("i", { style: `width:${Math.round(x.p * 100)}%` })), h("span", { class: "num", text: `${Math.round(x.p * 100)}%（${x.a}/${x.b}）` }))),
+    h("hr", { style: "border:0;border-top:1px solid var(--line);width:100%" }),
+    h("h3", { text: "難易度・領域" }),
+    [...LV.map(l => [l, A.lv[l]]), ["不動産", A.area["不動産"]], ["その他金融", A.area["その他"]]].map(([l, [a, b]]) => h("div", { class: "brow" }, h("span", { text: l }), h("div", { class: "bar" }, h("i", { style: `width:${pct(a, b)}%` })), h("span", { class: "num", text: `${pct(a, b)}%（${a}/${b}）` })))));
+  const qrows = [...A.qs].sort((x, y) => x.ok - y.ok);
+  const shown = showAllQ ? qrows : qrows.slice(0, 8);
+  wrap.append(h("div", { class: "card" }, h("h2", { text: "正答率の低い問題" }), h("p", { class: "mut", text: "勉強会の題材の候補です。「多かった誤答」は、いちばん選ばれた間違いの選択肢です。" }),
+    shown.map(x => { const wrongs = [0, 1, 2].filter(k => k !== x.q.ans).sort((a, b) => x.c[b] - x.c[a]); const top = wrongs[0];
+      return h("div", { class: "qi" },
+        h("div", { class: "row" }, h("b", { text: `Q${x.i + 1}` }), h("span", { class: "pill", text: x.q.tag }), h("span", { class: "mut", text: x.q.lv }), h("span", { class: "pill" + (x.ok / x.n < .5 ? " bad" : ""), style: "margin-left:auto", text: `正答率 ${pct(x.ok, x.n)}%（${x.ok}/${x.n}人）` })),
+        h("p", { text: x.q.text }),
+        h("p", { class: "mut", text: "多かった誤答：" + (x.c[top] ? `${x.q.opts[top]}（${x.c[top]}人）` : x.blank ? `未回答（${x.blank}人）` : "なし") })); }),
+    h("button", { class: "btn ghost", onclick: () => { showAllQ = !showAllQ; render(); } }, showAllQ ? "上位8問だけ表示" : "30問すべて表示")));
+  wrap.append(h("div", { class: "card" }, h("h2", { text: "個人ごとの結果（管理者のみ）" }), h("p", { class: "mut", text: "点数・順位は全体には公開しません。個別のフォローに使ってください。" }),
+    h("div", { class: "wrap" }, h("table", {}, h("thead", {}, h("tr", {}, ...["名前", "区分", "正解", "不動産", "その他", "伸ばしどころ"].map(t => h("th", { text: t })))),
+      h("tbody", {}, [...A.per].sort((x, y) => y.s.total - x.s.total).map(({ r, s }) => h("tr", {}, h("td", { text: r.name }), h("td", { text: r.group === "V" ? "アドバイザー" : "アポインター" }), h("td", { class: "n", text: `${s.total}/${N}` }),
+        h("td", { class: "n", text: `${s.area["不動産"][0]}/${s.area["不動産"][1]}` }), h("td", { class: "n", text: `${s.area["その他"][0]}/${s.area["その他"][1]}` }), h("td", { text: weakTags(s, 2).map(w => w.t).join("、") }))))))));
+  const sum = summaryText(A, list), ta = h("textarea", { readonly: true, style: "min-height:240px" }); ta.value = sum;
+  wrap.append(h("div", { class: "card" }, h("h2", { text: "報告用のまとめ" }), h("p", { class: "mut", text: "12/2の四半期会議や、上司へのLINE報告にそのまま使えます。" }), ta,
+    h("div", { class: "row" }, (() => { const b = h("button", { class: "btn" }, "要約をコピー"); b.onclick = () => copy(sum, b); return b; })(), h("button", { class: "btn ghost", onclick: () => saveCsv(list) }, "回答一覧をCSVで保存"))));
+  wrap.append(rosterCard(all));
+  return wrap;
+}
+function rosterCard(all) {
+  const ta = h("textarea", { id: "roster", placeholder: "受験してもらう人の名前を、1行に1人ずつ貼り付けます" }); ta.value = ADM.roster || "";
+  const names = (ADM.roster || "").split(/\n/).map(s => s.trim()).filter(Boolean), got = new Set(all.map(r => normName(r.name)));
+  const miss = names.filter(n => !got.has(normName(n)));
+  return h("div", { class: "card" }, h("h2", { text: "未回答の確認" }), h("p", { class: "mut", text: "名簿と照らして、まだ回答コードが届いていない人を出します。LINEでの個別連絡に使えます。" }), ta,
+    h("div", { class: "row" }, h("button", { class: "btn ghost", onclick: () => { ADM.roster = ta.value; saveA(); render(); } }, "名簿を保存して確認")),
+    names.length ? h("div", { class: miss.length ? "notice" : "ok" }, miss.length ? `未回答 ${miss.length}名：${miss.join("、")}` : `名簿${names.length}名の全員が回答済みです。`) : null);
+}
+
+/* ---------- 描画 ---------- */
+function render() {
+  const v = $("#view"), y = window.scrollY; v.replaceChildren(tab === "quiz" || QUIZ_ONLY ? viewQuiz() : adminView());
+  $("#tab-quiz").setAttribute("aria-selected", tab === "quiz"); $("#tab-admin").setAttribute("aria-selected", tab === "admin");
+  if (tab === "quiz") window.scrollTo(0, 0); else window.scrollTo(0, y);
+}
+$("#tab-quiz").onclick = () => { tab = "quiz"; render(); };
+$("#tab-admin").onclick = () => { tab = "admin"; render(); };
+render();
+</script>
+</body></html>
